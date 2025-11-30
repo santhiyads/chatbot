@@ -22,17 +22,6 @@ function Sidebar({
           >
             ⟳
           </button>
-
-          <button
-            className="new-btn"
-            onClick={() => {
-              // open a fresh conversation (no conv id)
-              onOpenConversation && onOpenConversation(null);
-            }}
-            title="New conversation"
-          >
-            + New
-          </button>
         </div>
       </div>
 
@@ -103,3 +92,4 @@ function Sidebar({
 }
 
 export default Sidebar;
+
