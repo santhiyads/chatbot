@@ -20,10 +20,7 @@ app = FastAPI(title="Chatbot")
 # Allow your React dev server
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://chatbot-9tb2-hf3wcoqob-santhiyads-projects.vercel.app",   # <-- replace with your exact Vercel URL
-        "https://chatbot-9tb2.vercel.app",                                # optional: other vercel variants
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],   # allow OPTIONS, GET, POST, etc.
     allow_headers=["*"],   # allow Content-Type and custom headers
@@ -118,5 +115,6 @@ def conversation_messages(conv_id: str, limit: int = 500):
 @app.get("/")
 def root():
     return {"status": "ok", "message": " Chatbot running"}
+
 
 
