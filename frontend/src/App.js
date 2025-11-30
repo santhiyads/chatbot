@@ -4,7 +4,8 @@ import axios from "axios";
 import "./App.css";
 import Sidebar from "./components/Sidebar"; // presentational sidebar (no fetch inside)
 
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = "https://chatbot-3-gl8h.onrender.com";
+
 const LOCAL_HISTORY_KEY = "chat_history";
 const LOCAL_CONV_KEY = "conv_id";
 
