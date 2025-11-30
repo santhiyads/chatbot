@@ -240,7 +240,8 @@ Run backend with a production ASGI server (Uvicorn/Gunicorn) behind a reverse pr
 Protect your GROQ_API_KEY — store it in hosted environment variables, never commit .env.
 
 
-<img width="539" height="402" alt="image" src="https://github.com/user-attachments/assets/9f68e40e-4ce8-430d-aec3-0477d68d2964" />
+<img width="760" height="474" alt="image" src="https://github.com/user-attachments/assets/b45049a2-e017-4323-bed4-7ebb9f9deb19" />
+
 
 
 Example requirements.txt (backend)
