@@ -239,24 +239,9 @@ Run backend with a production ASGI server (Uvicorn/Gunicorn) behind a reverse pr
 
 Protect your GROQ_API_KEY — store it in hosted environment variables, never commit .env.
 
-Files & structure (expected)
-chatbot/
-├─ backend/
-│  ├─ main.py         # FastAPI app
-│  ├─ model.py        # groq client wrapper
-│  ├─ db.py           # SQLAlchemy functions
-│  ├─ requirements.txt
-│  └─ .env            # local only
-├─ frontend/
-│  ├─ package.json
-│  ├─ src/
-│  │  ├─ App.js
-│  │  ├─ App.css
-│  │  ├─ components/
-│  │  │  ├─ Sidebar.jsx
-│  │  │  └─ Sidebar.css
-│  └─ ...
-└─ README.md
+
+<img width="539" height="402" alt="image" src="https://github.com/user-attachments/assets/9f68e40e-4ce8-430d-aec3-0477d68d2964" />
+
 
 Example requirements.txt (backend)
 fastapi
