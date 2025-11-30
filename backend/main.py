@@ -2,6 +2,7 @@
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response
 from typing import Optional
 import os
 import asyncio
@@ -34,6 +35,15 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
     conversation_id: Optional[str] = None
+
+@app.options("/chat")
+async def chat_options():
+    return Response(status_code=200, headers={
+        "Access-Control-Allow-Origin": "*",   # or your vercel origin
+        "Access-Control-Allow-Methods": "POST, OPTIONS, GET",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    })
+
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat_endpoint(req: ChatRequest):
@@ -115,6 +125,7 @@ def conversation_messages(conv_id: str, limit: int = 500):
 @app.get("/")
 def root():
     return {"status": "ok", "message": " Chatbot running"}
+
 
 
 
