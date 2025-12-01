@@ -1,21 +1,22 @@
 /* ------------------------------
     GLOBAL BASE
 ------------------------------ */
-html, body, #root {
+html,
+body,
+#root {
   margin: 0;
   padding: 0;
   height: 100%;
-  width: 100%;
-  font-family: "Inter", Arial, sans-serif;
-  background: #eef2f7;
-  overflow: hidden;
 }
 
+
+
+/* Main wrapper: sidebar + chat */
 .app-shell {
-  height: 100vh;
-  width: 100vw;
   display: flex;
-  background: #eef2f7;
+  height: 100vh;          /* Use full viewport height */
+  max-height: 100vh;
+  overflow: hidden;       /* Prevent double scrollbars */
 }
 
 /* ------------------------------
@@ -31,6 +32,7 @@ html, body, #root {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;           /* 🔴 keeps header visible */
 }
 
 .chat-header button {
@@ -55,6 +57,13 @@ html, body, #root {
   padding: 20px;
   background: #eef2f7;
 }
+.chat-shell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;      /* <- the magic line */
+  overflow: hidden;
+}
 
 .empty {
   text-align: center;
@@ -76,6 +85,7 @@ html, body, #root {
   white-space: pre-wrap;
   word-break: break-word;
 }
+
 
 /* USER bubble */
 .bubble.user {
@@ -110,6 +120,7 @@ html, body, #root {
   background: white;
   border-top: 1px solid #d1d9e0;
   align-items: flex-end;
+  flex-shrink: 0;   
 }
 
 .chat-input textarea {
@@ -166,8 +177,60 @@ html, body, #root {
   border-radius: 4px;
 }
 
-/* For small screens */
+/* Sidebar on the left */
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  background: #020617;
+  color: #e2e8f0;
+  border-right: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* Right side: chat area */
+.chat-shell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;   /* header + messages + input */
+}
+
+.sidebar-show-btn {
+  position: absolute;
+  left: 0;
+  top: 12px;
+  z-index: 20;
+  background: #0b1220;
+  color: #e6eef8;
+  border: 1px solid rgba(148, 163, 184, 0.7);
+  border-radius: 0 8px 8px 0;
+  padding: 8px 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.sidebar-show-btn:hover {
+  background: #111827;
+}
+/* RESPONSIVE: on small screens, stack sidebar on top */
+
+
 @media (max-width: 900px) {
+  .app-shell {
+    flex-direction: column;   /* sidebar on top, chat below */
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+  }
+
+  .chat-shell {
+    width: 100%;
+  }
+
   .bubble {
     max-width: 85%;
   }
