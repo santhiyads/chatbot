@@ -8,6 +8,7 @@ function Sidebar({
   onOpenConversation = () => {},
   activeConv = null,
   onReload = () => {},
+  onToggleSidebar = () => {}, 
 }) {
   return (
     <aside className="sidebar">
@@ -15,12 +16,26 @@ function Sidebar({
         <h3 className="sidebar-title">Your chats</h3>
 
         <div className="sidebar-actions">
+          <button className="sidebar-hide-btn" onClick={onToggleSidebar}>
+            ✕
+          </button>
           <button
             className="icon-btn reload"
             title="Reload conversations"
             onClick={() => onReload && onReload()}
           >
             ⟳
+          </button>
+
+          <button
+            className="new-btn"
+            onClick={() => {
+              // open a fresh conversation (no conv id)
+              onOpenConversation && onOpenConversation(null);
+            }}
+            title="New conversation"
+          >
+            + New
           </button>
         </div>
       </div>
@@ -40,15 +55,17 @@ function Sidebar({
             (c.last_message && c.last_message.slice(0, 60)) ||
             `Conversation ${id?.slice?.(0, 8) || ""}`;
           const msgCount = c.count ?? c.message_count ?? 0;
+          
           const time = c.last_time
-            ? (() => {
-                try {
-                  return new Date(c.last_time), "dd/MM/yyyy, p";
-                } catch {
-                  return c.last_time;
-                }
-              })()
+            ? new Date(c.last_time).toLocaleString("en-IN", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+              })
             : "";
+
 
           const isActive = activeConv && id === activeConv;
 
@@ -92,4 +109,3 @@ function Sidebar({
 }
 
 export default Sidebar;
-
