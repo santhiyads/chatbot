@@ -13,7 +13,7 @@ function App() {
   const [messages, setMessages] = useState([]); // chat bubbles shown in main area
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [conversations, setConversations] = useState([]); // sidebar list
   const [activeConv, setActiveConv] = useState(localStorage.getItem(LOCAL_CONV_KEY) || null);
 
@@ -147,10 +147,21 @@ function App() {
       send();
     }
   };
-
-  // Open conversation from sidebar
   const openConversation = async (convId) => {
-    if (!convId) return;
+    // 👉 Case 1: New Chat (Sidebar passes null)
+    if (!convId) {
+      try {
+        localStorage.removeItem(LOCAL_CONV_KEY);
+        localStorage.removeItem(LOCAL_HISTORY_KEY);
+        setActiveConv(null);
+        setMessages([]);
+      } catch (err) {
+        console.warn("Error starting new conversation:", err);
+      }
+      return;
+    }
+  
+    // 👉 Case 2: Open existing conversation
     try {
       localStorage.setItem(LOCAL_CONV_KEY, convId);
       setActiveConv(convId);
@@ -163,44 +174,55 @@ function App() {
     }
   };
 
-  // Clear current conversation (server + UI)
   const clearChat = async () => {
-    const convId = localStorage.getItem(LOCAL_CONV_KEY);
-    try {
-      // ask backend to clear and (backend returns updated conversation list)
-      const res = await axios.post(`${API_BASE}/history/clear`, null, { params: { conversation_id: convId } });
-      // clear client state
-      setMessages([]);
-      localStorage.removeItem(LOCAL_HISTORY_KEY);
-      localStorage.removeItem(LOCAL_CONV_KEY);
-      setActiveConv(null);
+  const convId = localStorage.getItem(LOCAL_CONV_KEY);
 
-      // backend may return conversations array — use it to update sidebar immediately
-      if (res?.data?.conversations) {
-        setConversations(res.data.conversations);
-      } else {
-        await reloadConversations();
-      }
-    } catch (err) {
-      console.error("clear failed", err);
-      // best-effort local clear anyway
-      setMessages([]);
-      localStorage.removeItem(LOCAL_HISTORY_KEY);
-      localStorage.removeItem(LOCAL_CONV_KEY);
-      setActiveConv(null);
-      await reloadConversations();
-    }
-  };
+  // 🛑 If no active conversation -> STOP & do nothing
+  if (!convId) {
+    alert("No active conversation selected. Open a chat first!");
+    return;
+  }
 
+  try {
+    await axios.post(`${API_BASE}/history/clear`, null, {
+      params: { conversation_id: convId },
+    });
+
+    localStorage.removeItem(LOCAL_CONV_KEY);
+    localStorage.removeItem(LOCAL_HISTORY_KEY);
+
+    setMessages([]);
+    setActiveConv(null);
+
+    await reloadConversations();
+
+    alert("Current conversation cleared!");
+  } catch (err) {
+    console.error("Clear chat error:", err);
+  }
+};
   return (
     <div className="app-shell" style={{ display: "flex", minHeight: "100vh" }}>
-      {/* Sidebar receives conversations and open handler */}
-      <Sidebar
-        conversations={conversations}
-        onOpenConversation={openConversation}
-        activeConv={activeConv}
-        onReload={reloadConversations}
-      />
+      {/* 🟦 SIDEBAR SECTION */}
+      {sidebarOpen && (
+        <div className="sidebar-wrapper">
+          <Sidebar
+            conversations={conversations}
+            onOpenConversation={openConversation}
+            activeConv={activeConv}
+            onReload={reloadConversations}
+            onToggleSidebar={() => setSidebarOpen(false)}
+          />
+        </div>
+      )}
+
+      {/* 🟥 SHOW BUTTON (When sidebar is hidden) */}
+      {!sidebarOpen && (
+        <button className="sidebar-show-btn" onClick={() => setSidebarOpen(true)}>
+          ≡
+        </button>
+      )}
+
 
       {/* main chat area */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
